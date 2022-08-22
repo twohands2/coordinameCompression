@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script>
+        console.log( '문제 링크 : https://www.acmicpc.net/problem/18870' );
+
+        const nMin = 1;
+        const nMax = ( 10 );
+        // const nMax = ( 1000 ) * ( 1000 );
+
+        const xMin = ( -1 ) * ( 10 ) * ( 10 ); // -10^9
+        const xMax = ( 1 ) * ( 10 ) * ( 10 );  // 10^9
+        // const xMin = ( -1 ) * ( 1000 ) * ( 1000 ) * ( 1000 ); // -10^9
+        // const xMax = ( 1 ) * ( 1000 ) * ( 1000 ) * ( 1000 );  // 10^9
+
+        let xList = []; // X
+        let temp = [];  // 오름차순, 중복제거할 X
+
+        // let xList = [44, -68, -89, 37, 5, 69, -39, 44];
+        // let temp = [44, -68, -89, 37, 5, 69, -39, 44];
+        // temp     [-89, -68, -39, 5, 37, 44, 69] 정렬과 중복제거 후
+                //    0   1     2  3   4   5    6 index
+        // comp       5   1    0   4   3  6    2   5
+
+        /**
+         * 입력
+         */
+        function input() {
+            const nId = document.getElementById( 'N' );
+
+            // Math.floor((Math.random() * (최대값 - 최소값)) + 최소값)
+            const nVal = Math.floor( ( Math.random() * ( nMax - nMin ) ) + nMin );
+
+            nId.innerHTML = '';
+            let nTemplate = '';
+
+            // N의 수만큼 좌표 X 생성
+            for( let i = 0; i < nVal; i++ ) {
+                // 랜덤으로 좌표 X 생성
+                // Math.floor((Math.random() * (최대값 - 최소값)) + 최소값)
+                const x = Math.floor( ( Math.random() * ( xMax - xMin ) ) + xMin );
+
+                xList.push( x );
+                temp.push( x );
+                nTemplate += x + ' ';
+            }
+
+            nId.innerHTML = nTemplate;
+        }
+
+
+        /**
+         * 출력
+         */
+        function output() {
+            const compXId = document.getElementById( 'compressionX' );
+            compXId.innerHTML = '';
+
+            // xList 오름차순으로 정렬
+            let sortX = sort( temp, 'ASC' );
+
+            // xList 중복 제거
+            let dedX = deduplication( sortX );
+
+            console.log( '================================================================================' );
+            console.log( 'X : ', xList );
+            console.log( 'temp : ', dedX );
+
+            let compX = [];
+            let compXTemplate = '';
+            // 좌표 압축
+            for( let i = 0; i < xList.length; i++ ) {
+                for( let j = 0; j < dedX.length; j++ ) {
+                    if( xList[ i ] === dedX[ j ] ) {
+                        compX.push( j );
+                        compXTemplate += j + ' ';
+                    }
+                }
+            }
+            console.log( '좌표 압축 : ', compX );
+            console.log( '================================================================================' );
+            compXId.innerHTML = compXTemplate;
+        }
+
+
+        /**
+         * 중복 제거
+         */
+        function deduplication( xList ) {
+            let temp = [];  // 중복 제거 후 리턴할 배열
+            let swh = xMax + 1; // 비교할 값을 임시로 담아두는 변수
+
+            for( let i = 0; i < xList.length; i++ ) {
+                if( swh !== xList[ i ] ) {
+                    temp.push( xList[ i ] );
+                    swh = xList[ i ];
+                }
+            }
+            console.log( '######## 중복제거 후 : ', temp );
+            return temp;
+        }
+
+
+        /**
+         * 정렬
+         */
+        function sort( temp, type ) {
+            let swh = 0; // 값의 위치가 변경될때 임시로 담아두는 변수
+            if( 'DESC' === type ) {
+
+            } else {
+                // 재귀를 멈추게 할 플래그 변수
+                let flag = 0;
+                for( let i = 0; i < temp.length; i++ ) {
+                    if( temp[ i ] > temp[ i + 1 ] ) {
+                        swh = temp[ i ];
+                        temp[ i ] = temp[ i + 1 ];
+                        temp[ i  + 1 ] = swh;
+                        flag++;
+                    }
+                }
+
+                // 재귀로 게속 반복
+                if( flag !== 0 ) {
+                    sort( temp, type );
+                }
+            }
+            console.log( '@@@@@@@@@ 정렬 후 ; ', temp );
+            return temp;
+        }
+
+    </script>
+    <title>좌표 압축</title>
+</head>
+<body onload="input();">
+    <p>입력</p>
+    <label>N</label>
+    <p id="N"></p>
+    <p></p>
+
+    <label>X</label>
+    <div id="X"></div>
+    <p></p>
+
+    <button type="button" onclick="output();" style="width: 70px">출력</button>
+    <p></p>
+
+    <p>================================================================================</p>
+
+    <p></p>
+    <label>좌표 압축</label>
+    <p id="compressionX"></p>
+</body>
+</html>
